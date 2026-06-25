@@ -35,7 +35,7 @@ const Blog = () => {
       date: '2024-01-10',
       category: 'Care Guide',
       readTime: '10 min read',
-      image: 'https://images.unsplash.com/photo-1594226801341-41427b4e5c22?w=800&q=80'
+      image: 'https://images.unsplash.com/photo-1645205449282-f96583a48054?w=800&q=80'
     },
     {
       id: 4,
