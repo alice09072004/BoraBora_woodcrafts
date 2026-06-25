@@ -16,6 +16,13 @@ export const products = [
     ],
     rating: 4.8,
     isFeatured: true,
+    // Flash sale attributes - set to end 48 hours from now
+    flashSale: {
+      discountPercentage: 25,
+      salePrice: 33750,
+      endTime: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+      stockRemaining: 3
+    },
     reviews: [
       {
         name: "Amara Ochieng",
@@ -129,6 +136,13 @@ export const products = [
     ],
     rating: 4.8,
     isFeatured: true,
+    // Flash sale attributes - set to end 48 hours from now
+    flashSale: {
+      discountPercentage: 30,
+      salePrice: 5950,
+      endTime: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+      stockRemaining: 5
+    },
     reviews: [
       {
         name: "Hannah Wanjiru",
@@ -183,6 +197,13 @@ export const products = [
     ],
     rating: 4.9,
     isFeatured: true,
+    // Flash sale attributes - set to end 48 hours from now
+    flashSale: {
+      discountPercentage: 20,
+      salePrice: 25600,
+      endTime: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+      stockRemaining: 2
+    },
     reviews: [
       {
         name: "Margaret Wambui",
@@ -309,4 +330,29 @@ export const getRelatedProducts = (currentProduct, limit = 3) => {
   return products
     .filter(product => product.category === currentProduct.category && product.id !== currentProduct.id)
     .slice(0, limit);
+};
+
+// Helper function to get products with active flash sales
+export const getFlashSaleProducts = () => {
+  const now = new Date();
+  return products.filter(product => {
+    if (!product.flashSale) return false;
+    const endTime = new Date(product.flashSale.endTime);
+    return endTime > now;
+  });
+};
+
+// Helper function to check if a product has an active flash sale
+export const isFlashSaleActive = (product) => {
+  if (!product.flashSale) return false;
+  const endTime = new Date(product.flashSale.endTime);
+  return endTime > new Date();
+};
+
+// Helper function to get flash sale price (returns sale price if active, otherwise original price)
+export const getFlashSalePrice = (product) => {
+  if (isFlashSaleActive(product) && product.flashSale) {
+    return product.flashSale.salePrice;
+  }
+  return product.price;
 };

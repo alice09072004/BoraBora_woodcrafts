@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getFeaturedProducts, formatPrice } from '../data/products';
+import { getFeaturedProducts, formatPrice, getFlashSaleProducts, isFlashSaleActive, getFlashSalePrice } from '../data/products';
 import { useAppContext } from '../context/AppContext';
+import CountdownTimer from '../components/CountdownTimer';
 
 const Home = () => {
   const featuredProducts = getFeaturedProducts();
+  const flashSaleProducts = getFlashSaleProducts();
   const { addToCart } = useAppContext();
 
   const categories = [
@@ -123,6 +125,133 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Flash Sales Showcase - Limited Artisan Flash Drop */}
+      {flashSaleProducts.length > 0 && (
+        <section className="py-16 md:py-20 bg-wood-clay/10 border-y border-wood-clay/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="px-3 py-1 bg-wood-clay text-wood-bg font-sans text-xs font-bold tracking-widest uppercase rounded-sm">
+                    Limited Time
+                  </span>
+                  <span className="flex items-center gap-1 text-wood-clay">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                    <span className="font-sans text-sm font-semibold">Flash Drop</span>
+                  </span>
+                </div>
+                <h2 className="font-serif text-3xl md:text-4xl font-bold text-wood-text">
+                  Limited Artisan Flash Drop
+                </h2>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="font-sans text-sm text-wood-text/70">Ends in:</span>
+                {flashSaleProducts.length > 0 && (
+                  <CountdownTimer 
+                    targetDate={flashSaleProducts[0].flashSale.endTime} 
+                    className="bg-white px-4 py-2 rounded-sm shadow-sm"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {flashSaleProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-sm overflow-hidden ring-1 ring-wood-text/5 hover:ring-wood-clay/40 hover:shadow-xl hover:shadow-wood-text/10 transition-all duration-300"
+                >
+                  <Link to={`/product/${product.id}`} className="block relative">
+                    <div className="aspect-square overflow-hidden bg-wood-text/5">
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                      />
+                    </div>
+                    {/* Flash Sale Badge */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                      <span className="px-3 py-1.5 bg-red-600 text-white font-sans text-xs font-bold tracking-widest uppercase rounded-sm shadow-lg">
+                        {product.flashSale.discountPercentage}% OFF
+                      </span>
+                    </div>
+                    {/* Countdown Badge */}
+                    <div className="absolute top-3 right-3">
+                      <div className="bg-wood-text/95 backdrop-blur-sm px-3 py-2 rounded-sm">
+                        <CountdownTimer 
+                          targetDate={product.flashSale.endTime} 
+                          compact={true}
+                          className="text-wood-bg text-sm"
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                  <div className="p-5">
+                    <Link to={`/product/${product.id}`} className="block">
+                      <p className="font-sans text-[11px] tracking-widest uppercase text-wood-green font-medium mb-1.5">
+                        {product.category}
+                      </p>
+                      <h3 className="font-serif text-lg font-semibold text-wood-text mb-3 line-clamp-2 hover:text-wood-green transition-colors leading-snug">
+                        {product.name}
+                      </h3>
+                    </Link>
+                    
+                    {/* Price Comparison */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="font-sans text-lg font-bold text-red-600">
+                        {formatPrice(product.flashSale.salePrice)}
+                      </span>
+                      <span className="font-sans text-sm text-wood-text/50 line-through">
+                        {formatPrice(product.price)}
+                      </span>
+                    </div>
+
+                    {/* Stock Progress Bar */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-sans text-xs text-wood-text/70">
+                          Only {product.flashSale.stockRemaining} pieces left
+                        </span>
+                        <span className="font-sans text-xs font-semibold text-wood-clay">
+                          Low Stock
+                        </span>
+                      </div>
+                      <div className="w-full h-2 bg-wood-text/10 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-wood-clay to-red-500 rounded-full transition-all duration-500"
+                          style={{ width: `${(product.flashSale.stockRemaining / 10) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      className="w-full px-4 py-2.5 bg-wood-green text-wood-bg font-sans text-sm font-medium rounded-sm hover:bg-wood-green-dark transition-colors duration-200"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center mt-10">
+              <Link
+                to="/shop?flashSale=true"
+                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-wood-clay text-wood-clay font-sans font-semibold rounded-sm hover:bg-wood-clay hover:text-wood-bg transition-all duration-300"
+              >
+                View All Flash Drops
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Craftsmanship */}
       <section className="py-20 md:py-28">
@@ -326,7 +455,7 @@ const Home = () => {
             "The live-edge table transformed our living room. You can see and feel the craftsmanship in every detail — it is truly an heirloom piece."
           </blockquote>
           <cite className="font-sans text-sm not-italic tracking-widest uppercase text-wood-clay">
-            — Grace Wanjiku, Nairobi
+            — Alice Nyambu, Nairobi
           </cite>
         </div>
       </section>
