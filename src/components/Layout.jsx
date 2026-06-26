@@ -15,6 +15,7 @@ const Layout = ({ children }) => {
     { path: '/about', label: 'About' },
     { path: '/blog', label: 'Blog' },
     { path: '/contact', label: 'Contact' },
+    { path: '/account', label: 'Account' }
   ];
 
   // Close mobile menu when route changes

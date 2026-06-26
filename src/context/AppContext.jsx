@@ -28,6 +28,52 @@ export const AppProvider = ({ children }) => {
     return savedWishlist ? JSON.parse(savedWishlist) : [];
   });
 
+  // User profile state - mock authenticated artisan profile
+  // In production, this would be fetched from a backend API using authentication tokens
+  const [userProfile, setUserProfile] = useState(() => {
+    // Initialize user profile from localStorage if available
+    const savedProfile = localStorage.getItem('borabora_user_profile');
+    if (savedProfile) {
+      return JSON.parse(savedProfile);
+    }
+    // Default mock profile for demonstration
+    return {
+      name: 'Alice Nyambu',
+      email: 'alice@example.com',
+      phone: '0712345678',
+      // Mock order history data - in production this would come from a database
+      orderHistory: [
+        {
+          orderId: 'ORDER-1714528901',
+          date: '2024-01-15',
+          totalAmount: 45000,
+          status: 'Delivered',
+          items: [
+            { name: 'Mvule Live-Edge Coffee Table', quantity: 1, price: 45000 }
+          ]
+        },
+        {
+          orderId: 'ORDER-1712345678',
+          date: '2024-02-20',
+          totalAmount: 12000,
+          status: 'Dispatched',
+          items: [
+            { name: 'Mahogany Salad Bowls Set', quantity: 1, price: 12000 }
+          ]
+        },
+        {
+          orderId: 'ORDER-1713456789',
+          date: '2024-03-10',
+          totalAmount: 28000,
+          status: 'In Workshop',
+          items: [
+            { name: 'Hand-Carved Wall Art Panel', quantity: 1, price: 28000 }
+          ]
+        }
+      ]
+    };
+  });
+
   // Persist cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('borabora_cart', JSON.stringify(cart));
@@ -37,6 +83,11 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('borabora_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
+
+  // Persist user profile to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('borabora_user_profile', JSON.stringify(userProfile));
+  }, [userProfile]);
 
   // Add item to cart
   const addToCart = (product, quantity = 1) => {
@@ -149,6 +200,22 @@ export const AppProvider = ({ children }) => {
     return wishlist.includes(productId);
   };
 
+  // Update user profile
+  const updateUserProfile = (updatedProfile) => {
+    setUserProfile(prevProfile => ({
+      ...prevProfile,
+      ...updatedProfile
+    }));
+  };
+
+  // Add order to user's order history
+  const addOrderToHistory = (order) => {
+    setUserProfile(prevProfile => ({
+      ...prevProfile,
+      orderHistory: [order, ...prevProfile.orderHistory]
+    }));
+  };
+
   // Calculate estimated shipping (in production, this would come from an API)
   const getShippingCost = () => {
     const cartTotal = getCartTotal();
@@ -179,6 +246,11 @@ export const AppProvider = ({ children }) => {
     removeFromWishlist,
     toggleWishlist,
     isInWishlist,
+    
+    // User profile state and functions
+    userProfile,
+    updateUserProfile,
+    addOrderToHistory,
     
     // Shipping calculation
     getShippingCost,
