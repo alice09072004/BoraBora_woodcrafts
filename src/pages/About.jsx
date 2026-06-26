@@ -144,21 +144,22 @@ const About = () => {
             {[
               {
                 name: 'Blessy Altah',
+                name: 'Blessy',
                 role: 'Master Craftsman & Founder',
                 years: '25 years experience'
               },
               {
-                name: 'Grace Wanjiku',
+                name: 'Hassan',
                 role: 'Lead Carver',
                 years: '18 years experience'
               },
               {
-                name: 'David Omondi',
+                name: 'Saheel',
                 role: 'Furniture Specialist',
                 years: '15 years experience'
               },
               {
-                name: 'Peter Kamau',
+                name: 'Nadis',
                 role: 'Finish Expert',
                 years: '12 years experience'
               }
