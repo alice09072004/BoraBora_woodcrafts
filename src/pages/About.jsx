@@ -1,3 +1,4 @@
+import { info } from 'autoprefixer';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -143,25 +144,24 @@ const About = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                name: 'Blessy Altah',
                 name: 'Blessy',
                 role: 'Master Craftsman & Founder',
-                years: '25 years experience'
+                info: 'Turning raw wood into polished perfection for over two decades. Blessy guides our team with a passion for quality and a commitment to excellence, blending traditional techniques with modern design sensibilities. Her vision ensures that every piece we create is not just furniture, but a work of art that tells a story.'
               },
               {
                 name: 'Hassan',
                 role: 'Lead Carver',
-                years: '18 years experience'
+                info: 'Hassan has been shaping wood into intricate designs for over 15 years. His expertise in traditional carving techniques brings a unique touch to every piece, ensuring that each item is not only functional but also a visual masterpiece.'
               },
               {
                 name: 'Saheel',
-                role: 'Furniture Specialist',
-                years: '15 years experience'
+                role: 'Custom Furniture Designer',
+                info: 'From blueprints to final assenbly, Saheel brings a fresh perspective to custom furniture design, blending functionality with aesthetic appeal to create pieces that are both beautiful and practical.'
               },
               {
-                name: 'Nadis',
-                role: 'Finish Expert',
-                years: '12 years experience'
+                name: 'Nadya',
+                role: 'Master Finisher',
+                info: 'Nadya has a keen eye for detail and a deep understanding of wood finishes. With 12 years of experience, her meticulous approach ensures that every piece not only looks stunning but also stands the test of time, with finishes that enhance the natural beauty of the wood.'
               }
             ].map((member, index) => (
               <div key={index} className="text-center">
@@ -177,7 +177,7 @@ const About = () => {
                   {member.role}
                 </p>
                 <p className="font-sans text-xs text-wood-text/60">
-                  {member.years}
+                  {member.info}
                 </p>
               </div>
             ))}
